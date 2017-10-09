@@ -18,7 +18,7 @@
 --
 -- Table structure for table `xcust_linfox_pr_tbl`
 --
-
+use kfc_pr;
 DROP TABLE IF EXISTS `xcust_linfox_pr_tbl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

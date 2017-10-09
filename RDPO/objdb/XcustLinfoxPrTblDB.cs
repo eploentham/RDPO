@@ -8,8 +8,12 @@ namespace RDPO
 {
     public class XcustLinfoxPrTblDB
     {
-        XcustLinfoxPrTbl xCLFPT;
+        public XcustLinfoxPrTbl xCLFPT;
         ControlRDPO cRDPO;
+        public XcustLinfoxPrTblDB()
+        {
+            initConfig();
+        }
         public XcustLinfoxPrTblDB(ControlRDPO crdpo)
         {
             cRDPO = crdpo;

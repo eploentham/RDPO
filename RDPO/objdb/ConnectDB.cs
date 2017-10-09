@@ -40,43 +40,49 @@ namespace RDPO
         public String passDBORCBA = "Ekartc2c5";
         public String portDBORCBA = "3306";
 
-        public String databaseDBORCBIT = "bithis";        // orc BIT
-        public String hostDBORCBIT = "172.25.1.153";
-        public String userDBORCBIT = "root";
-        public String passDBORCBIT = "Ekartc2c5";
-        public String portDBORCBIT = "3306";
+        public String databaseDBKFCPO = "bithis";        // orc BIT
+        public String hostDBKFCPO = "172.25.1.153";
+        public String userDBKFCPO = "root";
+        public String passDBKFCPO = "Ekartc2c5";
+        public String portDBKFCPO = "3306";
         
         public SqlConnection connBIT, connMainHIS1, connBITDemo;
-        public MySqlConnection connORCMA, connORCBA, connORCBIT;
+        public MySqlConnection connORCMA, connORCBA, connORCBIT, connKFC;
         public int _rowsAffected = 0;
-        private IniFile iniFile;
-        public ConnectDB(String host)
+        private InitC initC;
+        public ConnectDB(String host, InitC initc)
         {
+            initC = initc;
             if (host == "bit")
             {
                 connBIT = new SqlConnection();
                 //connMainHIS.ConnectionString = GetConfig(hostName);
-                connBIT.ConnectionString = "Server=" + hostDBBIT + ";Database=" + databaseDBBIT + ";Uid=" + userDBBIT + ";Pwd=" + passDBBIT + ";Connection Timeout=300;";
+                connBIT.ConnectionString = "Server=" + initC.hostDBBIT + ";Database=" + initC.databaseDBBIT + ";Uid=" + initC.userDBBIT + ";Pwd=" + initC.passDBBIT + ";Connection Timeout=300;";
             }
             else if (host == "orc_ma")
             {
                 connORCMA = new MySqlConnection();
-                connORCMA.ConnectionString = "Server=" + hostDBORCMA + ";Database=" + databaseDBORCMA + ";Uid=" + userDBORCMA + ";Pwd=" + passDBORCMA + ";port = "+ portDBORCMA + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
+                connORCMA.ConnectionString = "Server=" + initC.hostDBORCMA + ";Database=" + initC.databaseDBORCMA + ";Uid=" + initC.userDBORCMA + ";Pwd=" + initC.passDBORCMA + ";port = " + initC.portDBORCMA + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
             }
             else if (host == "orc_ba")
             {
                 connORCBA = new MySqlConnection();
-                connORCBA.ConnectionString = "Server=" + hostDBORCBA + ";Database=" + databaseDBORCBA + ";Uid=" + userDBORCBA + ";Pwd=" + passDBORCBA + ";port = "+ portDBORCBA + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
+                connORCBA.ConnectionString = "Server=" + initC.hostDBORCBA + ";Database=" + initC.databaseDBORCBA + ";Uid=" + initC.userDBORCBA + ";Pwd=" + initC.passDBORCBA + ";port = " + initC.portDBORCBA + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
             }
             else if (host == "orc_bit")
             {
                 connORCBIT = new MySqlConnection();
-                connORCBIT.ConnectionString = "Server=" + hostDBORCBIT + ";Database=" + databaseDBORCBIT + ";Uid=" + userDBORCBIT + ";Pwd=" + passDBORCBIT + ";port = "+ portDBORCBIT + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
+                connORCBIT.ConnectionString = "Server=" + initC.hostDBKFCPO + ";Database=" + initC.databaseDBKFCPO + ";Uid=" + initC.userDBKFCPO + ";Pwd=" + initC.passDBKFCPO + ";port = " + initC.portDBKFCPO + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
             }
             else if (host == "bithis")
             {
                 connBITDemo = new SqlConnection();
-                connBITDemo.ConnectionString = "Server=" + hostDBBITDemo + ";Database=" + databaseDBBITDemo + ";Uid=" + userDBBITDemo + ";Pwd=" + passDBBITDemo + ";Connection Timeout=300;";
+                connBITDemo.ConnectionString = "Server=" + initC.hostDBBITDemo + ";Database=" + initC.databaseDBBITDemo + ";Uid=" + initC.userDBBITDemo + ";Pwd=" + initC.passDBBITDemo + ";Connection Timeout=300;";
+            }
+            else if (host == "kfc_po")
+            {
+                connKFC = new MySqlConnection();
+                connKFC.ConnectionString = "Server=" + initC.hostDBKFCPO + ";Database=" + initC.databaseDBKFCPO + ";Uid=" + initC.userDBKFCPO + ";Pwd=" + initC.passDBKFCPO + ";port = " + initC.portDBKFCPO + ";Connection Timeout = 300;default command timeout=0; CharSet=utf8;";
             }
         }
         public ConnectDB(String hostDB, String databaseDB, String userDB, String passDB)
@@ -697,18 +703,50 @@ namespace RDPO
             }
             return toReturn;
         }
-        public static void BulkToMySQL()
+        public void BulkToMySQL(String host, List<String> linfox)
         {
-            string ConnectionString = "server=192.168.1xxx";
-            StringBuilder sCommand = new StringBuilder("INSERT INTO User (FirstName, LastName) VALUES ");
+            String ConnectionString = "", bbb = "",errMsg="", processFlag="", validateFlag="";
+            XcustLinfoxPrTblDB xclfptdb = new XcustLinfoxPrTblDB();
+            if (host == "kfc_po")
+            {
+                ConnectionString = connKFC.ConnectionString;
+            }
+
+            StringBuilder sCommand = new StringBuilder("INSERT INTO " + xclfptdb.xCLFPT.table + " (" + xclfptdb.xCLFPT.COMPANY + ", " +
+                xclfptdb.xCLFPT.DELIVERY_INSTRUCTION + "," + xclfptdb.xCLFPT.ERROR_MSG + "," + xclfptdb.xCLFPT.ITEM_NUMBER + "," +
+                xclfptdb.xCLFPT.LINE_NUMBER + "," + xclfptdb.xCLFPT.ORDER_DATE + "," + xclfptdb.xCLFPT.ORDER_TIME + "," +
+                xclfptdb.xCLFPT.PO_NUMBER + "," + xclfptdb.xCLFPT.PROCESS_FLAG + "," + xclfptdb.xCLFPT.QTY + "," +
+                xclfptdb.xCLFPT.SUPPLIER_CODE + "," + xclfptdb.xCLFPT.UOM + "," + xclfptdb.xCLFPT.VALIDATE_FLAG +
+                //xclfptdb.xCLFPT.COMPANY + "," + xclfptdb.xCLFPT.COMPANY + "," + xclfptdb.xCLFPT.COMPANY +
+                ") VALUES ");
             using (MySqlConnection mConnection = new MySqlConnection(ConnectionString))
             {
                 List<string> Rows = new List<string>();
-                for (int i = 0; i < 100000; i++)
+                bbb = "";
+                for (int i = 0; i < linfox.Count; i++)
                 {
-                    Rows.Add(string.Format("('{0}','{1}')", MySqlHelper.EscapeString("test"), MySqlHelper.EscapeString("test")));
+                    String[] aaa = linfox[i].Split('|');
+                    errMsg = "";
+                    processFlag = "";
+                    validateFlag = "";
+                    //aaa = string.Format("('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}')", MySqlHelper.EscapeString(linfox[i]),
+                    //    MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]),
+                    //    MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]),
+                    //    MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]),
+                    //    MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]), MySqlHelper.EscapeString(linfox[i]));
+
+                    bbb += "('" + aaa[0] + "','" + 
+                        aaa[11] + "','" + errMsg + "','" + aaa[6] + "','" + 
+                        aaa[2] + "','" + aaa[4] + "','" + aaa[5] + "','" + 
+                        aaa[1] + "','" + processFlag + "','" + aaa[7] + "','" + 
+                        aaa[3] + "','" + aaa[8] + "','"+ validateFlag + "'),";
+                    ConnectionString = "";
+                    //Rows.Add(string.Format("('{0}','{1}')", MySqlHelper.EscapeString("test"), MySqlHelper.EscapeString("test")));
+                    //linfox[i]
                 }
-                sCommand.Append(string.Join(",", Rows));
+                bbb = bbb.Substring(0,bbb.Length - 1);
+                //aaa = string.Join(",", linfox);
+                sCommand.Append(bbb);
                 sCommand.Append(";");
                 mConnection.Open();
                 using (MySqlCommand myCmd = new MySqlCommand(sCommand.ToString(), mConnection))

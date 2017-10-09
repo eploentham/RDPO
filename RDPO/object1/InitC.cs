@@ -9,12 +9,6 @@ namespace RDPO
     public class InitC
     {
         public String PathInitial = "", PathProcess="",PathError="",PathArchive="";
-        
-
-
-
-
-
 
         public String databaseDBBIT = "bithis_demo1";             //bit
         public String hostDBBIT = "172.25.1.153";
@@ -40,10 +34,10 @@ namespace RDPO
         public String passDBORCBA = "Ekartc2c5";
         public String portDBORCBA = "3306";
 
-        public String databaseDBORCBIT = "bithis";        // orc BIT
-        public String hostDBORCBIT = "172.25.1.153";
-        public String userDBORCBIT = "root";
-        public String passDBORCBIT = "Ekartc2c5";
-        public String portDBORCBIT = "3306";
+        public String databaseDBKFCPO = "bithis";        // orc BIT
+        public String hostDBKFCPO = "172.25.1.153";
+        public String userDBKFCPO = "root";
+        public String passDBKFCPO = "Ekartc2c5";
+        public String portDBKFCPO = "3306";
     }
 }

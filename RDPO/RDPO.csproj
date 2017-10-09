@@ -106,6 +106,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="objdb\ConnectDB.cs" />
+    <Compile Include="objdb\XcustLinfoxPrTblDB.cs" />
     <Compile Include="objdb\XcustPorReqDistIntAllDB.cs" />
     <Compile Include="objdb\XcustPorReqHeaderIntAllDB.cs" />
     <Compile Include="objdb\XcustPorReqLineIntAllDB.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="object1\InitC.cs" />
     <Compile Include="object1\Persistent.cs" />
     <Compile Include="object1\ReadText.cs" />
+    <Compile Include="object1\XcustLinfoxPrTbl.cs" />
     <Compile Include="object1\XcustPorReqDistIntAll.cs" />
     <Compile Include="object1\XcustPorReqHeaderIntAll.cs" />
     <Compile Include="object1\XcustPorReqLineIntAll.cs" />

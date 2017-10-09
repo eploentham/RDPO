@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,14 +28,15 @@ namespace RDPO
         {
             iniFile = new IniFile(Environment.CurrentDirectory + "\\" + Application.ProductName + ".ini");
             initC = new InitC();
+            GetConfig();
 
-            conn = new ConnectDB("krc_po");
+            conn = new ConnectDB("kfc_po", initC);
 
             fontSize9 = 9.75f;
             fontSize8 = 8.25f;
             fV1B = new Font(fontName, fontSize9, FontStyle.Bold);
             fV1 = new Font(fontName, fontSize8, FontStyle.Regular);
-            GetConfig();
+            
         }
         public void GetConfig()
         {
@@ -62,11 +64,11 @@ namespace RDPO
             initC.passDBORCBA = iniFile.Read("passDBORCBA");
             initC.portDBORCBA = iniFile.Read("portDBORCBA");
 
-            initC.databaseDBORCBIT = iniFile.Read("databaseDBORCBIT");        // orc BIT
-            initC.hostDBORCBIT = iniFile.Read("hostDBORCBIT");
-            initC.userDBORCBIT = iniFile.Read("userDBORCBIT");
-            initC.passDBORCBIT = iniFile.Read("passDBORCBIT");
-            initC.portDBORCBIT = iniFile.Read("portDBORCBIT");
+            initC.databaseDBKFCPO = iniFile.Read("databaseDBKFCPO");        // orc BIT
+            initC.hostDBKFCPO = iniFile.Read("hostDBKFCPO");
+            initC.userDBKFCPO = iniFile.Read("userDBKFCPO");
+            initC.passDBKFCPO = iniFile.Read("passDBKFCPO");
+            initC.portDBKFCPO = iniFile.Read("portDBKFCPO");
             //initC.quoLine6 = iniFile.Read("quotationline6");
 
             //initC.grdQuoColor = iniFile.Read("gridquotationcolor");
@@ -77,6 +79,17 @@ namespace RDPO
             //    initC.grdQuoColor = "#b7e1cd";
             //}
             //initC.Password = regE.getPassword();
+        }
+        public void CreateIfMissing(String path)
+        {
+            bool folderExists = Directory.Exists(path);
+            if (!folderExists)
+                Directory.CreateDirectory(path);
+        }
+        public String[] getFileinFolder(String path)
+        {
+            string[] filePaths = Directory.GetFiles(@path);
+            return filePaths;
         }
     }
 }

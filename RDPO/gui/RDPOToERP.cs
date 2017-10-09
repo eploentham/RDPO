@@ -17,10 +17,14 @@ namespace RDPO
         MaterialLabel lb1;
         MaterialSingleLineTextField txtFileName;
         MaterialFlatButton btnRead;
+        ListView lv1;
+       
 
         Color cTxtL, cTxtE, cForm;
 
         ControlRDPO cRDPO;
+
+        String[] filePO;
         public RDPOToERP(ControlRDPO crdpo)
         {
             //this.FormBorderStyle = FormBorderStyle.None;
@@ -35,7 +39,18 @@ namespace RDPO
         private void initConfig()
         {
             initCompoment();
-            txtFileName.Text = cRDPO.initC.PathInitial + "\\01344dft.801";
+            txtFileName.Text = cRDPO.initC.PathInitial + "PR03102017.txt";
+            cRDPO.CreateIfMissing(cRDPO.initC.PathArchive);
+            cRDPO.CreateIfMissing(cRDPO.initC.PathError);
+            cRDPO.CreateIfMissing(cRDPO.initC.PathInitial);
+            cRDPO.CreateIfMissing(cRDPO.initC.PathProcess);
+
+            filePO = cRDPO.getFileinFolder(cRDPO.initC.PathInitial);
+            foreach(string aa in filePO)
+            {
+                lv1.Items.Add(aa);
+            }
+            
         }
         private void initCompoment()
         {
@@ -71,13 +86,25 @@ namespace RDPO
             Controls.Add(btnRead);
             btnRead.Location = new System.Drawing.Point(grd1 + txtFileName.Width + 5, cRDPO.formFirstLineY + gapLine);
             btnRead.Click += btnRead_Click;
+
+            lv1 = new ListView();
+            lv1.Font =cRDPO.fV1;
+            lv1.FullRowSelect = true;
+            lv1.Size = new System.Drawing.Size(577, 224);
+            lv1.Location = new System.Drawing.Point(cRDPO.formFirstLineX, line3);
+            lv1.FullRowSelect = true;
+            //lv1.Dock = System.Windows.Forms.DockStyle.Fill;
+            lv1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+
+            Controls.Add(lv1);
         }
 
         private void btnRead_Click(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
             ReadText rd = new ReadText();
-            rd.ReadTextFile(txtFileName.Text);
+            List<String>  linfox = rd.ReadTextFile(txtFileName.Text);
+            cRDPO.conn.BulkToMySQL("kfc_po", linfox);
         }
 
         private void txtFileName_Leave(object sender, EventArgs e)
