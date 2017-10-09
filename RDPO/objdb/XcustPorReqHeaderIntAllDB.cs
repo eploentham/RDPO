@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RDPO.objdb
+namespace RDPO
 {
     public class XcustPorReqHeaderIntAllDB
     {
-        ControlRDPO cRDPO;
+        ConnectDB conn;
         public XcustPorReqHeaderIntAll xCPRHIA;
-        public XcustPorReqHeaderIntAllDB(ControlRDPO crdpo)
+        public XcustPorReqHeaderIntAllDB(ConnectDB c)
         {
-            cRDPO = crdpo;
+            conn = c;
             initConfig();
         }
         private void initConfig()
@@ -59,7 +59,7 @@ namespace RDPO.objdb
                     p.LINFOX_PR + "','" + p.PO_NUMBER + "','" + p.PROCESS_FLAG + "','" +
                     p.PR_APPROVER + "','" + p.PR_STATAUS + "','" + p.Requisitioning_BU + "','" +
                     p.Requisition_Number + "') ";
-                chk = cRDPO.conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
+                chk = conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
                 //chk = p.RowNumber;
                 //chk = p.Code;
             }

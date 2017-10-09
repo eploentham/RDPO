@@ -13,11 +13,12 @@ namespace RDPO
         int gapLine = 5;
         int grd0 = 0, grd1 = 100, grd2 = 240, grd3 = 320, grd4 = 570, grd5 = 650, grd51 = 700, grd6 = 820, grd7 = 900, grd8 = 1070, grd9 = 1200;
         int line1 = 30, line2 = 57, line3 = 85, line4 = 105, line41 = 120, line5 = 270, ControlHeight = 21, lineGap = 5;
+        int formwidth = 820, formheight=600;
 
         MaterialLabel lb1;
         MaterialSingleLineTextField txtFileName;
         MaterialFlatButton btnRead;
-        ListView lv1;
+        MaterialListView lv1;
        
 
         Color cTxtL, cTxtE, cForm;
@@ -28,7 +29,7 @@ namespace RDPO
         public RDPOToERP(ControlRDPO crdpo)
         {
             //this.FormBorderStyle = FormBorderStyle.None;
-            this.Size = new Size(820, 600);
+            this.Size = new Size(formwidth, formheight);
             this.StartPosition = FormStartPosition.CenterScreen;
             cRDPO = crdpo;
             
@@ -44,6 +45,10 @@ namespace RDPO
             cRDPO.CreateIfMissing(cRDPO.initC.PathError);
             cRDPO.CreateIfMissing(cRDPO.initC.PathInitial);
             cRDPO.CreateIfMissing(cRDPO.initC.PathProcess);
+
+            lv1.Columns.Add("List File", formwidth - 40 - 100, HorizontalAlignment.Left);
+            lv1.Columns.Add("   process   ", 100, HorizontalAlignment.Center);
+            //lv1.Columns.Add(" Azimuth ", 100, HorizontalAlignment.Center);
 
             filePO = cRDPO.getFileinFolder(cRDPO.initC.PathInitial);
             foreach(string aa in filePO)
@@ -87,12 +92,13 @@ namespace RDPO
             btnRead.Location = new System.Drawing.Point(grd1 + txtFileName.Width + 5, cRDPO.formFirstLineY + gapLine);
             btnRead.Click += btnRead_Click;
 
-            lv1 = new ListView();
+            lv1 = new MaterialListView();
             lv1.Font =cRDPO.fV1;
             lv1.FullRowSelect = true;
-            lv1.Size = new System.Drawing.Size(577, 224);
-            lv1.Location = new System.Drawing.Point(cRDPO.formFirstLineX, line3);
+            lv1.Size = new System.Drawing.Size(formwidth-40, formheight- line3-80);
+            lv1.Location = new System.Drawing.Point(cRDPO.formFirstLineX+5, line3);
             lv1.FullRowSelect = true;
+            lv1.View = View.Details;
             //lv1.Dock = System.Windows.Forms.DockStyle.Fill;
             lv1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 
@@ -102,9 +108,9 @@ namespace RDPO
         private void btnRead_Click(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
-            ReadText rd = new ReadText();
-            List<String>  linfox = rd.ReadTextFile(txtFileName.Text);
-            cRDPO.conn.BulkToMySQL("kfc_po", linfox);
+            // move file
+            cRDPO.processRDPO(filePO);
+            
         }
 
         private void txtFileName_Leave(object sender, EventArgs e)

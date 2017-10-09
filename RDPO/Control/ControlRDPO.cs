@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,10 @@ namespace RDPO
 
         private IniFile iniFile;
         public InitC initC;
+        public XcustLinfoxPrTblDB xCLPRTDB;
+        public XcustPorReqHeaderIntAllDB xCPRHIADB;
+        public XcustPorReqLineIntAllDB xCPRLIADB;
+        public XcustPorReqDistIntAllDB xCPRDIADB;
         public ControlRDPO()
         {
             iniFile = new IniFile(Environment.CurrentDirectory + "\\" + Application.ProductName + ".ini");
@@ -31,6 +36,10 @@ namespace RDPO
             GetConfig();
 
             conn = new ConnectDB("kfc_po", initC);
+            xCLPRTDB = new XcustLinfoxPrTblDB(conn);
+            xCPRHIADB = new XcustPorReqHeaderIntAllDB(conn);
+            xCPRLIADB = new XcustPorReqLineIntAllDB(conn);
+            xCPRDIADB = new XcustPorReqDistIntAllDB(conn);
 
             fontSize9 = 9.75f;
             fontSize8 = 8.25f;
@@ -90,6 +99,133 @@ namespace RDPO
         {
             string[] filePaths = Directory.GetFiles(@path);
             return filePaths;
+        }
+        public void moveFile(String sourceFile, String destinationFile)
+        {
+            System.IO.File.Move(@sourceFile, @destinationFile);
+        }
+        private Boolean validateLinfox(DataRow row)
+        {
+            //row[dc].ToString().Trim()
+            return true;
+        }
+        public void processRDPO(String[] filePO)
+        {
+            ReadText rd = new ReadText();
+            String[] filePOProcess;
+            DataTable dt = new DataTable();
+            Boolean chk = false;
+
+            // b.	Program ทำการ Move File มาไว้ที่ Path ตาม Parameter Path Process
+            foreach (string aa in filePO)
+            {
+                moveFile(aa, initC.PathProcess + aa.Replace(initC.PathInitial, ""));
+            }
+
+            //c.	จากนัน Program ทำการอ่าน File ใน Folder Path Process มาไว้ยัง Table XCUST_LINFOX_PR_TBL ด้วย Validate Flag = ‘N’ ,PROCES_FLAG = ‘N’
+            // insert XCUST_LINFOX_PR_TBL
+            filePOProcess = getFileinFolder(initC.PathProcess);
+            foreach (string aa in filePOProcess)
+            {
+                List<String> linfox = rd.ReadTextFile(aa);
+                conn.BulkToMySQL("kfc_po", linfox);
+
+                dt.Clear();
+                //d.	จากนั้น Program จะเอาข้อมูลจาก Table XCUST_LINFOX_PR_TBL มาทำการ Validate 
+                //e.กรณีที่ Validat ผ่าน จะเอาข้อมูล Insert ลง table XCUST_POR_REQ_HEADER_INT_ALL, XCUST_POR_REQ_LINE_INT_ALL, XCUST_POR_REQ_DIST_INT_ALL
+                dt = xCLPRTDB.selectLinfox();
+                foreach (DataRow row in dt.Rows)
+                {
+                    chk = validateLinfox(row);
+                    if (chk)
+                    {
+                        //e.	กรณีที่ Validat ผ่าน จะเอาข้อมูล Insert ลง table XCUST_POR_REQ_HEADER_INT_ALL,XCUST_POR_REQ_LINE_INT_ALL ,XCUST_POR_REQ_DIST_INT_ALLและ Update Validate_flag = ‘Y’
+                        insertXcustPorReqHeaderIntAll(row);
+
+                        insertXcustPorReqLineIntAll(row);
+
+                        insertXcustPorReqDistIntAll(row);
+                        //และ Update Validate_flag = ‘Y’
+
+                    }
+                    else
+                    {
+                        //f.	กรณีที่ Validate ไม่ผ่าน จะะ Update Validate_flag = ‘E’ พร้อมระบุ Error Message
+                    }
+                }
+
+            }
+            
+        }
+        private void insertXcustPorReqHeaderIntAll(DataRow row)
+        {
+            XcustPorReqHeaderIntAll xCPRHA = new XcustPorReqHeaderIntAll();
+            xCPRHA.ATTRIBUTE1 = "";
+            xCPRHA.ATTRIBUTE_DATE1 = "";
+            xCPRHA.ATTRIBUTE_TIMESTAMP1 = "";
+            xCPRHA.Batch_ID = "";
+            xCPRHA.Description = "";
+            xCPRHA.ENTER_BY = "";
+            xCPRHA.import_source = "";
+            xCPRHA.LINFOX_PR = "";
+            xCPRHA.PO_NUMBER = "";
+            xCPRHA.PROCESS_FLAG = "";
+            xCPRHA.PR_APPROVER = "";
+            xCPRHA.PR_STATAUS = "";
+            xCPRHA.Requisitioning_BU = "";
+            xCPRHA.Requisition_Number = "";
+            xCPRHIADB.insert(xCPRHA);
+        }
+        private void insertXcustPorReqLineIntAll(DataRow row)
+        {
+            XcustPorReqLineIntAll xCPRLIA = new XcustPorReqLineIntAll();
+            xCPRLIA.ATTRIBUTE1 = "";
+            xCPRLIA.ATTRIBUTE_DATE1 = "";
+            xCPRLIA.ATTRIBUTE_NUMBER1 = "";
+            xCPRLIA.ATTRIBUTE_TIMESTAMP1 = "";
+            xCPRLIA.Category_Name = "";
+            xCPRLIA.CURRENCY_CODE = "";
+            xCPRLIA.Deliver_to_Location = "";
+            xCPRLIA.Deliver_to_Organization = "";
+            xCPRLIA.Goods = "";
+            xCPRLIA.INVENTORY = "";
+            xCPRLIA.ITEM_NUMBER = "";
+            xCPRLIA.LINFOX_PR = "";
+            xCPRLIA.Need_by_Date = "";
+            xCPRLIA.PO_LINE_NUMBER = "";
+            xCPRLIA.PO_NUMBER = "";
+            xCPRLIA.Price = "";
+            xCPRLIA.PROCESS_FLAG = "";
+            xCPRLIA.Procurement_BU = "";
+            xCPRLIA.PR_APPROVER = "";
+            xCPRLIA.QTY = "";
+            xCPRLIA.requester = "";
+            xCPRLIA.Requisitioning_BU = "";
+            xCPRLIA.Subinventory = "";
+            xCPRLIA.SUPPLIER_CODE = "";
+            xCPRLIA.Supplier_Site = "";
+            xCPRLIADB.insert(xCPRLIA);
+        }
+        private void insertXcustPorReqDistIntAll(DataRow row)
+        {
+            XcustPorReqDistIntAll xCPRDIA = new XcustPorReqDistIntAll();
+            xCPRDIA.ATTRIBUTE1 = "";
+            xCPRDIA.ATTRIBUTE_CATEGORY = "";
+            xCPRDIA.ATTRIBUTE_DATE1 = "";
+            xCPRDIA.ATTRIBUTE_NUMBER1 = "";
+            xCPRDIA.ATTRIBUTE_TIMESTAMP1 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT1 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT2 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT3 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT4 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT5 = "";
+            xCPRDIA.CHARGE_ACCOUNT_SEGMENT6 = "";
+            xCPRDIA.PO_LINE_NUMBER = "";
+            xCPRDIA.PO_NUMBER = "";
+            xCPRDIA.PROCESS_FLAG = "";
+            xCPRDIA.Program_running = "";
+            xCPRDIA.QTY = "";
+            xCPRDIADB.insert(xCPRDIA);
         }
     }
 }

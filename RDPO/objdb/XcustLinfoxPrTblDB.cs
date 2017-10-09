@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,14 +10,14 @@ namespace RDPO
     public class XcustLinfoxPrTblDB
     {
         public XcustLinfoxPrTbl xCLFPT;
-        ControlRDPO cRDPO;
+        ConnectDB conn;
         public XcustLinfoxPrTblDB()
         {
             initConfig();
         }
-        public XcustLinfoxPrTblDB(ControlRDPO crdpo)
+        public XcustLinfoxPrTblDB(ConnectDB c)
         {
-            cRDPO = crdpo;
+            conn = c;
             initConfig();
         }
         private void initConfig()
@@ -37,6 +38,13 @@ namespace RDPO
             xCLFPT.VALIDATE_FLAG = "VALIDATE_FLAG";
 
             xCLFPT.table = "xcust_linfox_pr_tbl";
+        }
+        public DataTable selectLinfox()
+        {
+            DataTable dt = new DataTable();
+            String sql = "select * From "+xCLFPT.table;
+            dt = conn.selectData(sql, "kfc_po");
+            return dt;
         }
         //public static void BulkToMySQL()
         //{

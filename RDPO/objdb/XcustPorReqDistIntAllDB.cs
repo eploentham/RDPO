@@ -9,10 +9,10 @@ namespace RDPO
     public class XcustPorReqDistIntAllDB
     {
         XcustPorReqDistIntAll xCPRDIA;
-        ControlRDPO cRDPO;
-        public XcustPorReqDistIntAllDB(ControlRDPO crdpo)
+        ConnectDB conn;
+        public XcustPorReqDistIntAllDB(ConnectDB c)
         {
-            cRDPO = crdpo;
+            conn = c;
             initConfig();
         }
         private void initConfig()

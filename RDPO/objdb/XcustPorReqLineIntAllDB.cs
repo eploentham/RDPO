@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RDPO.objdb
+namespace RDPO
 {
     public class XcustPorReqLineIntAllDB
     {
-        ControlRDPO cRDPO;
+        ConnectDB conn;
         XcustPorReqLineIntAll xCPRLIA;
-        public XcustPorReqLineIntAllDB(ControlRDPO crdpo)
+        public XcustPorReqLineIntAllDB(ConnectDB c)
         {
-            cRDPO = crdpo;
+            conn = c;
             initConfig();
         }
         private void initConfig()
