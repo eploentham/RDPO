@@ -56,12 +56,12 @@ namespace RDPO
                     xCPRDIA.PO_NUMBER + "," + xCPRDIA.PROCESS_FLAG + "," + xCPRDIA.Program_running + "," +                    
                     xCPRDIA.QTY  + ") " +
                     "Values('" + p.ATTRIBUTE1 + "','" + p.ATTRIBUTE_DATE1 + "','" + p.ATTRIBUTE_CATEGORY + "','" +
-                    p.ATTRIBUTE_NUMBER1 + "','" + p.ATTRIBUTE_TIMESTAMP1 + "','" + p.CHARGE_ACCOUNT_SEGMENT1 + "','" + 
+                    p.ATTRIBUTE_NUMBER1 + "',now(),'" + p.CHARGE_ACCOUNT_SEGMENT1 + "','" + 
                     p.CHARGE_ACCOUNT_SEGMENT2 + "','" + p.CHARGE_ACCOUNT_SEGMENT3 + "','" + p.CHARGE_ACCOUNT_SEGMENT4 + "','" +
                     p.CHARGE_ACCOUNT_SEGMENT5 + "','" + p.CHARGE_ACCOUNT_SEGMENT6 + "','" + p.PO_LINE_NUMBER + "','" +
                     p.PO_NUMBER + "','" + p.PROCESS_FLAG + "','" + p.Program_running + "','" +                    
                     p.QTY + "') ";
-                chk = cRDPO.conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
+                chk = conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
                 //chk = p.RowNumber;
                 //chk = p.Code;
             }

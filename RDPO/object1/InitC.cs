@@ -8,7 +8,7 @@ namespace RDPO
 {
     public class InitC
     {
-        public String PathInitial = "", PathProcess="",PathError="",PathArchive="";
+        public String PathInitial = "", PathProcess="",PathError="",PathArchive="", BU_NAME="", APPROVER_EMAIL="", Requester="";
 
         public String databaseDBBIT = "bithis_demo1";             //bit
         public String hostDBBIT = "172.25.1.153";

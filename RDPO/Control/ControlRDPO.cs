@@ -25,7 +25,7 @@ namespace RDPO
 
         private IniFile iniFile;
         public InitC initC;
-        public XcustLinfoxPrTblDB xCLPRTDB;
+        public XcustLinfoxPrTblDB xCLFPTDB;
         public XcustPorReqHeaderIntAllDB xCPRHIADB;
         public XcustPorReqLineIntAllDB xCPRLIADB;
         public XcustPorReqDistIntAllDB xCPRDIADB;
@@ -36,7 +36,7 @@ namespace RDPO
             GetConfig();
 
             conn = new ConnectDB("kfc_po", initC);
-            xCLPRTDB = new XcustLinfoxPrTblDB(conn);
+            xCLFPTDB = new XcustLinfoxPrTblDB(conn);
             xCPRHIADB = new XcustPorReqHeaderIntAllDB(conn);
             xCPRLIADB = new XcustPorReqLineIntAllDB(conn);
             xCPRDIADB = new XcustPorReqDistIntAllDB(conn);
@@ -55,9 +55,9 @@ namespace RDPO
             initC.PathProcess = iniFile.Read("PathProcess");
             initC.portDBBIT = iniFile.Read("portDBBIT");
 
-            initC.databaseDBBITDemo = iniFile.Read("databaseDBBITDemo");    //bit demo
-            initC.hostDBBITDemo = iniFile.Read("hostDBBITDemo");
-            initC.userDBBITDemo = iniFile.Read("userDBBITDemo");
+            initC.APPROVER_EMAIL = iniFile.Read("APPROVER_EMAIL");    //bit demo
+            initC.BU_NAME = iniFile.Read("BU_NAME");
+            initC.Requester = iniFile.Read("Requester");
             initC.passDBBITDemo = iniFile.Read("passDBBITDemo");
             initC.portDBBITDemo = iniFile.Read("portDBBITDemo");
 
@@ -115,7 +115,8 @@ namespace RDPO
             String[] filePOProcess;
             DataTable dt = new DataTable();
             Boolean chk = false;
-
+            String date = System.DateTime.Now.ToString("yyyy-MMM-dd");
+            String time = System.DateTime.Now.ToString("HH:mm:ss");
             // b.	Program ทำการ Move File มาไว้ที่ Path ตาม Parameter Path Process
             foreach (string aa in filePO)
             {
@@ -133,18 +134,18 @@ namespace RDPO
                 dt.Clear();
                 //d.	จากนั้น Program จะเอาข้อมูลจาก Table XCUST_LINFOX_PR_TBL มาทำการ Validate 
                 //e.กรณีที่ Validat ผ่าน จะเอาข้อมูล Insert ลง table XCUST_POR_REQ_HEADER_INT_ALL, XCUST_POR_REQ_LINE_INT_ALL, XCUST_POR_REQ_DIST_INT_ALL
-                dt = xCLPRTDB.selectLinfox();
+                dt = xCLFPTDB.selectLinfox();
                 foreach (DataRow row in dt.Rows)
                 {
                     chk = validateLinfox(row);
                     if (chk)
                     {
                         //e.	กรณีที่ Validat ผ่าน จะเอาข้อมูล Insert ลง table XCUST_POR_REQ_HEADER_INT_ALL,XCUST_POR_REQ_LINE_INT_ALL ,XCUST_POR_REQ_DIST_INT_ALLและ Update Validate_flag = ‘Y’
-                        insertXcustPorReqHeaderIntAll(row);
+                        insertXcustPorReqHeaderIntAll(row, date, time);
 
-                        insertXcustPorReqLineIntAll(row);
+                        insertXcustPorReqLineIntAll(row, date, time);
 
-                        insertXcustPorReqDistIntAll(row);
+                        insertXcustPorReqDistIntAll(row, date, time);
                         //และ Update Validate_flag = ‘Y’
 
                     }
@@ -157,74 +158,75 @@ namespace RDPO
             }
             
         }
-        private void insertXcustPorReqHeaderIntAll(DataRow row)
-        {
-            XcustPorReqHeaderIntAll xCPRHA = new XcustPorReqHeaderIntAll();
-            xCPRHA.ATTRIBUTE1 = "";
-            xCPRHA.ATTRIBUTE_DATE1 = "";
-            xCPRHA.ATTRIBUTE_TIMESTAMP1 = "";
-            xCPRHA.Batch_ID = "";
-            xCPRHA.Description = "";
-            xCPRHA.ENTER_BY = "";
-            xCPRHA.import_source = "";
-            xCPRHA.LINFOX_PR = "";
-            xCPRHA.PO_NUMBER = "";
-            xCPRHA.PROCESS_FLAG = "";
-            xCPRHA.PR_APPROVER = "";
-            xCPRHA.PR_STATAUS = "";
-            xCPRHA.Requisitioning_BU = "";
-            xCPRHA.Requisition_Number = "";
-            xCPRHIADB.insert(xCPRHA);
+        private void insertXcustPorReqHeaderIntAll(DataRow row, String date, String time)
+        {//row[dc].ToString().Trim().
+            XcustPorReqHeaderIntAll xCPRHIA = new XcustPorReqHeaderIntAll();
+            xCPRHIA.ATTRIBUTE1 = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
+
+            xCPRHIA.ATTRIBUTE_DATE1 = date;
+            xCPRHIA.ATTRIBUTE_TIMESTAMP1 = date+" "+ time;
+            xCPRHIA.Batch_ID = "";
+            xCPRHIA.Description = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
+            xCPRHIA.ENTER_BY = "";
+            xCPRHIA.import_source = "";
+            xCPRHIA.ATTRIBUTE_CATEGORY = "";
+            xCPRHIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
+            xCPRHIA.PROCESS_FLAG = "P";
+            xCPRHIA.PR_APPROVER = "";
+            xCPRHIA.PR_STATAUS = "";
+            xCPRHIA.Requisitioning_BU = "";
+            xCPRHIA.Requisition_Number = "";
+            xCPRHIADB.insert(xCPRHIA);
         }
-        private void insertXcustPorReqLineIntAll(DataRow row)
+        private void insertXcustPorReqLineIntAll(DataRow row, String date, String time)
         {
             XcustPorReqLineIntAll xCPRLIA = new XcustPorReqLineIntAll();
-            xCPRLIA.ATTRIBUTE1 = "";
-            xCPRLIA.ATTRIBUTE_DATE1 = "";
+            xCPRLIA.ATTRIBUTE1 = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
+            xCPRLIA.ATTRIBUTE_DATE1 = date;
             xCPRLIA.ATTRIBUTE_NUMBER1 = "";
-            xCPRLIA.ATTRIBUTE_TIMESTAMP1 = "";
+            xCPRLIA.ATTRIBUTE_TIMESTAMP1 = date + " " + time;
             xCPRLIA.Category_Name = "";
             xCPRLIA.CURRENCY_CODE = "";
             xCPRLIA.Deliver_to_Location = "";
             xCPRLIA.Deliver_to_Organization = "";
             xCPRLIA.Goods = "";
             xCPRLIA.INVENTORY = "";
-            xCPRLIA.ITEM_NUMBER = "";
+            xCPRLIA.ITEM_NUMBER = row[xCLFPTDB.xCLFPT.ITEM_NUMBER].ToString().Trim();
             xCPRLIA.LINFOX_PR = "";
             xCPRLIA.Need_by_Date = "";
-            xCPRLIA.PO_LINE_NUMBER = "";
-            xCPRLIA.PO_NUMBER = "";
+            xCPRLIA.PO_LINE_NUMBER = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
+            xCPRLIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
             xCPRLIA.Price = "";
-            xCPRLIA.PROCESS_FLAG = "";
+            xCPRLIA.PROCESS_FLAG = "P";
             xCPRLIA.Procurement_BU = "";
             xCPRLIA.PR_APPROVER = "";
-            xCPRLIA.QTY = "";
-            xCPRLIA.requester = "";
-            xCPRLIA.Requisitioning_BU = "";
+            xCPRLIA.QTY = row[xCLFPTDB.xCLFPT.QTY].ToString().Trim();
+            xCPRLIA.requester = initC.Requester;
+            xCPRLIA.Requisitioning_BU = initC.BU_NAME;
             xCPRLIA.Subinventory = "";
-            xCPRLIA.SUPPLIER_CODE = "";
+            xCPRLIA.SUPPLIER_CODE = row[xCLFPTDB.xCLFPT.SUPPLIER_CODE].ToString().Trim();
             xCPRLIA.Supplier_Site = "";
             xCPRLIADB.insert(xCPRLIA);
         }
-        private void insertXcustPorReqDistIntAll(DataRow row)
+        private void insertXcustPorReqDistIntAll(DataRow row, String date, String time)
         {
             XcustPorReqDistIntAll xCPRDIA = new XcustPorReqDistIntAll();
             xCPRDIA.ATTRIBUTE1 = "";
             xCPRDIA.ATTRIBUTE_CATEGORY = "";
-            xCPRDIA.ATTRIBUTE_DATE1 = "";
+            xCPRDIA.ATTRIBUTE_DATE1 = date;
             xCPRDIA.ATTRIBUTE_NUMBER1 = "";
-            xCPRDIA.ATTRIBUTE_TIMESTAMP1 = "";
+            xCPRDIA.ATTRIBUTE_TIMESTAMP1 = date + " " + time;
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT1 = "";
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT2 = "";
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT3 = "";
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT4 = "";
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT5 = "";
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT6 = "";
-            xCPRDIA.PO_LINE_NUMBER = "";
-            xCPRDIA.PO_NUMBER = "";
-            xCPRDIA.PROCESS_FLAG = "";
+            xCPRDIA.PO_LINE_NUMBER = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
+            xCPRDIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
+            xCPRDIA.PROCESS_FLAG = "P";
             xCPRDIA.Program_running = "";
-            xCPRDIA.QTY = "";
+            xCPRDIA.QTY = row[xCLFPTDB.xCLFPT.QTY].ToString().Trim();
             xCPRDIADB.insert(xCPRDIA);
         }
     }

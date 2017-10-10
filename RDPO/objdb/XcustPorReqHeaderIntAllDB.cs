@@ -25,7 +25,7 @@ namespace RDPO
             xCPRHIA.Description = "Description";
             xCPRHIA.ENTER_BY = "ENTER_BY";
             xCPRHIA.import_source = "import_source";
-            xCPRHIA.LINFOX_PR = "LINFOX_PR";
+            xCPRHIA.ATTRIBUTE_CATEGORY = "LINFOX_PR";
             xCPRHIA.PO_NUMBER = "PO_NUMBER";
             xCPRHIA.PROCESS_FLAG = "PROCESS_FLAG";
             xCPRHIA.PR_APPROVER = "PR_APPROVER";
@@ -50,13 +50,13 @@ namespace RDPO
                 sql = "Insert Into " + xCPRHIA.table + "(" + xCPRHIA.ATTRIBUTE1 + "," + xCPRHIA.ATTRIBUTE_DATE1 + "," +
                     xCPRHIA.ATTRIBUTE_TIMESTAMP1 + "," + xCPRHIA.Batch_ID + "," +
                     xCPRHIA.Description + "," + xCPRHIA.ENTER_BY + "," + xCPRHIA.import_source + "," +
-                    xCPRHIA.LINFOX_PR + "," + xCPRHIA.PO_NUMBER + "," + xCPRHIA.PROCESS_FLAG + "," +
+                    xCPRHIA.ATTRIBUTE_CATEGORY + "," + xCPRHIA.PO_NUMBER + "," + xCPRHIA.PROCESS_FLAG + "," +
                     xCPRHIA.PR_APPROVER + "," + xCPRHIA.PR_STATAUS + "," + xCPRHIA.Requisitioning_BU + "," +
                     xCPRHIA.Requisition_Number + ") " +
                     "Values('" + p.ATTRIBUTE1 + "','" + p.ATTRIBUTE_DATE1 + "','" +
                     p.ATTRIBUTE_TIMESTAMP1 + "','" + p.Batch_ID + "','" +
                     p.Description + "','" + p.ENTER_BY + "','" + p.import_source + "','" +
-                    p.LINFOX_PR + "','" + p.PO_NUMBER + "','" + p.PROCESS_FLAG + "','" +
+                    p.ATTRIBUTE_CATEGORY + "','" + p.PO_NUMBER + "','" + p.PROCESS_FLAG + "','" +
                     p.PR_APPROVER + "','" + p.PR_STATAUS + "','" + p.Requisitioning_BU + "','" +
                     p.Requisition_Number + "') ";
                 chk = conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
