@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1    Database: kfc_pr
 -- ------------------------------------------------------
 -- Server version	5.5.5-10.1.25-MariaDB
-
+use kfc_pr;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;

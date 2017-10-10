@@ -25,7 +25,7 @@ namespace RDPO
             xCPRHIA.Description = "Description";
             xCPRHIA.ENTER_BY = "ENTER_BY";
             xCPRHIA.import_source = "import_source";
-            xCPRHIA.ATTRIBUTE_CATEGORY = "LINFOX_PR";
+            xCPRHIA.ATTRIBUTE_CATEGORY = "ATTRIBUTE_CATEGORY";
             xCPRHIA.PO_NUMBER = "PO_NUMBER";
             xCPRHIA.PROCESS_FLAG = "PROCESS_FLAG";
             xCPRHIA.PR_APPROVER = "PR_APPROVER";
@@ -59,7 +59,7 @@ namespace RDPO
                     p.ATTRIBUTE_CATEGORY + "','" + p.PO_NUMBER + "','" + p.PROCESS_FLAG + "','" +
                     p.PR_APPROVER + "','" + p.PR_STATAUS + "','" + p.Requisitioning_BU + "','" +
                     p.Requisition_Number + "') ";
-                chk = conn.ExecuteNonQueryAutoIncrement(sql, "kfc_po");
+                chk = conn.ExecuteNonQuery(sql, "kfc_po");
                 //chk = p.RowNumber;
                 //chk = p.Code;
             }

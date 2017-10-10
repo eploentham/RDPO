@@ -166,15 +166,15 @@ namespace RDPO
                     adap.Dispose();
                 }
             }
-            else if (host == "orc_bit")
+            else if (host == "kfc_po")
             {
                 MySqlCommand com = new MySqlCommand();
                 com.CommandText = sql;
-                com.Connection = connORCBIT;
+                com.Connection = connKFC;
                 MySqlDataAdapter adap = new MySqlDataAdapter(com);
                 try
                 {
-                    connORCBIT.Open();
+                    connKFC.Open();
                     adap.Fill(toReturn);
                     //return toReturn;
                 }
@@ -184,7 +184,7 @@ namespace RDPO
                 }
                 finally
                 {
-                    connORCBIT.Close();
+                    connKFC.Close();
                     com.Dispose();
                     adap.Dispose();
                 }
@@ -420,14 +420,14 @@ namespace RDPO
                     com.Dispose();
                 }
             }
-            else if (host == "orc_bit")
+            else if (host == "kfc_po")
             {
                 MySqlCommand com = new MySqlCommand();
                 com.CommandText = sql;
-                com.Connection = connORCBIT;
+                com.Connection = connKFC;
                 try
                 {
-                    connORCBIT.Open();
+                    connKFC.Open();
                     _rowsAffected = com.ExecuteNonQuery();
                     toReturn = _rowsAffected.ToString();
                 }
@@ -439,7 +439,7 @@ namespace RDPO
                 finally
                 {
                     //_mainConnection.Close();
-                    connORCBIT.Close();
+                    connKFC.Close();
                     com.Dispose();
                 }
             }
@@ -678,14 +678,14 @@ namespace RDPO
                     com.Dispose();
                 }
             }
-            else if (host == "orc_bit")
+            else if (host == "kfc_po")
             {
                 MySqlCommand com = new MySqlCommand();
                 com.CommandText = sql;
-                com.Connection = connORCBIT;
+                com.Connection = connKFC;
                 try
                 {
-                    connORCBIT.Open();
+                    connKFC.Open();
                     _rowsAffected = com.ExecuteNonQuery();
                     toReturn = _rowsAffected.ToString();
                 }
@@ -697,7 +697,7 @@ namespace RDPO
                 finally
                 {
                     //_mainConnection.Close();
-                    connORCBIT.Close();
+                    connKFC.Close();
                     com.Dispose();
                 }
             }

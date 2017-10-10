@@ -115,7 +115,8 @@ namespace RDPO
             String[] filePOProcess;
             DataTable dt = new DataTable();
             Boolean chk = false;
-            String date = System.DateTime.Now.ToString("yyyy-MMM-dd");
+            TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time");
+            String date = System.DateTime.Now.ToString("yyyy-MM-dd");
             String time = System.DateTime.Now.ToString("HH:mm:ss");
             // b.	Program ทำการ Move File มาไว้ที่ Path ตาม Parameter Path Process
             foreach (string aa in filePO)
@@ -154,9 +155,17 @@ namespace RDPO
                         //f.	กรณีที่ Validate ไม่ผ่าน จะะ Update Validate_flag = ‘E’ พร้อมระบุ Error Message
                     }
                 }
+                //g.	จากนั้นรายการที่ผ่าน Program จะอ่านค่าจาก Table XCUST_POR_REQ_HEADER_INT_ALL
+                //h.  ,XCUST_POR_REQ_LINE_INT_ALL ,XCUST_POR_REQ_DIST_INT_ALL โดยมี Process_flag = ‘N’  แล้วทำการ Generate File PR Interface ตาม Format Standard
+                genFilePR();
+
 
             }
-            
+
+        }
+        private void genFilePR()
+        {
+
         }
         private void insertXcustPorReqHeaderIntAll(DataRow row, String date, String time)
         {//row[dc].ToString().Trim().
@@ -171,7 +180,7 @@ namespace RDPO
             xCPRHIA.import_source = "";
             xCPRHIA.ATTRIBUTE_CATEGORY = "";
             xCPRHIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
-            xCPRHIA.PROCESS_FLAG = "P";
+            xCPRHIA.PROCESS_FLAG = "N";
             xCPRHIA.PR_APPROVER = "";
             xCPRHIA.PR_STATAUS = "";
             xCPRHIA.Requisitioning_BU = "";
@@ -197,7 +206,7 @@ namespace RDPO
             xCPRLIA.PO_LINE_NUMBER = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
             xCPRLIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
             xCPRLIA.Price = "";
-            xCPRLIA.PROCESS_FLAG = "P";
+            xCPRLIA.PROCESS_FLAG = "N";
             xCPRLIA.Procurement_BU = "";
             xCPRLIA.PR_APPROVER = "";
             xCPRLIA.QTY = row[xCLFPTDB.xCLFPT.QTY].ToString().Trim();
@@ -224,7 +233,7 @@ namespace RDPO
             xCPRDIA.CHARGE_ACCOUNT_SEGMENT6 = "";
             xCPRDIA.PO_LINE_NUMBER = row[xCLFPTDB.xCLFPT.LINE_NUMBER].ToString().Trim();
             xCPRDIA.PO_NUMBER = row[xCLFPTDB.xCLFPT.PO_NUMBER].ToString().Trim();
-            xCPRDIA.PROCESS_FLAG = "P";
+            xCPRDIA.PROCESS_FLAG = "N";
             xCPRDIA.Program_running = "";
             xCPRDIA.QTY = row[xCLFPTDB.xCLFPT.QTY].ToString().Trim();
             xCPRDIADB.insert(xCPRDIA);
